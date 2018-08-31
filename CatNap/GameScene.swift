@@ -16,6 +16,11 @@ class GameScene: SKScene {
     
     override func didMove(to view: SKView) {
         
+        // Animation of tail wouldn`t work otherwise
+        // For more information see: https://stackoverflow.com/a/50064653
+        self.isPaused = true
+        self.isPaused = false
+        
         // Get label node from scene and store it for use later
         self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
         if let label = self.label {
