@@ -20,6 +20,7 @@
 		15F1FD33213934FB007BC33C /* win.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 15F1FD2E213934FB007BC33C /* win.mp3 */; };
 		15F1FD34213934FB007BC33C /* lose.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 15F1FD2F213934FB007BC33C /* lose.mp3 */; };
 		15F1FD35213934FB007BC33C /* backgroundMusic.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 15F1FD30213934FB007BC33C /* backgroundMusic.mp3 */; };
+		15F1FD3821393B31007BC33C /* Cat.sks in Resources */ = {isa = PBXBuildFile; fileRef = 15F1FD3721393B31007BC33C /* Cat.sks */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		15F1FD2E213934FB007BC33C /* win.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = win.mp3; sourceTree = "<group>"; };
 		15F1FD2F213934FB007BC33C /* lose.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = lose.mp3; sourceTree = "<group>"; };
 		15F1FD30213934FB007BC33C /* backgroundMusic.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = backgroundMusic.mp3; sourceTree = "<group>"; };
+		15F1FD3721393B31007BC33C /* Cat.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Cat.sks; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,9 +72,9 @@
 		15F1FCCF21393253007BC33C /* CatNap */ = {
 			isa = PBXGroup;
 			children = (
+				15F1FD3621393AD3007BC33C /* Scenes */,
 				15F1FD2B213934FB007BC33C /* Sounds */,
 				15F1FCD021393253007BC33C /* AppDelegate.swift */,
-				15F1FCD221393253007BC33C /* GameScene.sks */,
 				15F1FCD421393253007BC33C /* Actions.sks */,
 				15F1FCD621393253007BC33C /* GameScene.swift */,
 				15F1FCD821393253007BC33C /* GameViewController.swift */,
@@ -94,6 +96,15 @@
 				15F1FD30213934FB007BC33C /* backgroundMusic.mp3 */,
 			);
 			path = Sounds;
+			sourceTree = "<group>";
+		};
+		15F1FD3621393AD3007BC33C /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				15F1FCD221393253007BC33C /* GameScene.sks */,
+				15F1FD3721393B31007BC33C /* Cat.sks */,
+			);
+			path = Scenes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -164,6 +175,7 @@
 				15F1FD32213934FB007BC33C /* pop.mp3 in Resources */,
 				15F1FD35213934FB007BC33C /* backgroundMusic.mp3 in Resources */,
 				15F1FCD521393253007BC33C /* Actions.sks in Resources */,
+				15F1FD3821393B31007BC33C /* Cat.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
