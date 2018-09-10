@@ -9,10 +9,36 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene {
+struct PhysicsCategory {
+    static let None: UInt32 = 0
+    static let cat: UInt32 = 0b1
+    static let Block: UInt32 = 0b10
+    static let Bed: UInt32 = 0b100
+    static let Edge: UInt32 = 0b1000
+    static let Label: UInt32 = 0b10000
+}
+
+protocol EventListenerNode {
+    func didMoveToScene()
+}
+
+protocol InteractiveNode {
+    func interact()
+}
+
+class GameScene: SKScene, SKPhysicsContactDelegate {
     
-    private var label : SKLabelNode?
-    private var spinnyNode : SKShapeNode?
+    //--------------------------------------------------
+    // MARK: - Properties
+    //--------------------------------------------------
+    
+    var bedNode: BedNode!
+    var catNode: CatNode!
+    var playable = true
+    
+    //--------------------------------------------------
+    // MARK: - Lifecycle
+    //--------------------------------------------------
     
     override func didMove(to view: SKView) {
         
@@ -21,74 +47,102 @@ class GameScene: SKScene {
         self.isPaused = true
         self.isPaused = false
         
-        // Get label node from scene and store it for use later
-        self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
-        if let label = self.label {
-            label.alpha = 0.0
-            label.run(SKAction.fadeIn(withDuration: 2.0))
+        //calculate playable margin
+        
+        let maxAspectRatio: CGFloat = 16.0/9.0
+        let maxAspectRatioHeight = size.width / maxAspectRatio
+        let playableMargin: CGFloat = (size.height - maxAspectRatioHeight)/2
+        
+        let playableRect = CGRect(x: 0, y: playableMargin, width: size.width, height: size.height-playableMargin*2)
+        
+        physicsBody = SKPhysicsBody(edgeLoopFrom: playableRect)
+        physicsWorld.contactDelegate = self
+        physicsBody!.categoryBitMask = PhysicsCategory.Edge
+        
+        enumerateChildNodes(withName: "//*", using: {node, _ in
+            if let eventListenerNode = node as? EventListenerNode {
+                eventListenerNode.didMoveToScene()
+            }
+        })
+        
+        bedNode = childNode(withName: "bed") as! BedNode
+        catNode = childNode(withName: "//cat_body") as! CatNode
+        
+        SKTAudio.sharedInstance().playBackgroundMusic("backgroundMusic.mp3")
+    }
+    
+    override func didSimulatePhysics() {
+        if playable {
+            if abs(catNode.parent!.zRotation) > CGFloat(25).degreesToRadians() {
+                lose()
+            }
         }
+    }
+    
+    //--------------------------------------------------
+    // MARK: - Methods
+    //--------------------------------------------------
+    
+    func didBegin(_ contact: SKPhysicsContact) {
         
-        // Create shape node to use during mouse interaction
-        let w = (self.size.width + self.size.height) * 0.05
-        self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
-        
-        if let spinnyNode = self.spinnyNode {
-            spinnyNode.lineWidth = 2.5
+        let collision = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
+
+        if collision == PhysicsCategory.Label | PhysicsCategory.Edge {
+            let labelNode = contact.bodyA.categoryBitMask == PhysicsCategory.Label ?
+                contact.bodyA.node :
+                contact.bodyB.node
             
-            spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(Double.pi), duration: 1)))
-            spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
-                                              SKAction.fadeOut(withDuration: 0.5),
-                                              SKAction.removeFromParent()]))
+            if let message = labelNode as? MessageNode {
+                message.didBounce()
+            }
         }
-    }
-    
-    
-    func touchDown(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.green
-            self.addChild(n)
-        }
-    }
-    
-    func touchMoved(toPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.blue
-            self.addChild(n)
-        }
-    }
-    
-    func touchUp(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.red
-            self.addChild(n)
-        }
-    }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let label = self.label {
-            label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
+
+        if !playable {
+            return
         }
         
-        for t in touches { self.touchDown(atPoint: t.location(in: self)) }
+        //Wenn die Katze in das Bett fällt = gewonnen, und wenn sie dien Boden berührt = verloren
+        if collision == PhysicsCategory.cat | PhysicsCategory.Bed {
+            print("SUCCESS")
+            win()
+        } else if collision == PhysicsCategory.cat | PhysicsCategory.Edge {
+            print("FAIL")
+            lose()
+        }
     }
     
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
+    func inGameMessage(text:String) {
+        let message = MessageNode(message: text)
+        message.position = CGPoint(x: frame.midX, y: frame.midY)
+        addChild(message)
     }
     
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
+    func newGame() {
+        let scene = GameScene(fileNamed: "GameScene")
+        scene!.scaleMode = scaleMode
+        view!.presentScene(scene)
     }
     
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
+    func lose() {
+        playable = false
+        SKTAudio.sharedInstance().pauseBackgroundMusic()
+        SKTAudio.sharedInstance().playSoundEffect("lose.mp3")
+        
+        inGameMessage(text: "Try again...")
+        
+        run(SKAction.afterDelay(5, runBlock: newGame))
+        catNode.wakeUp()
     }
     
-    
-    override func update(_ currentTime: TimeInterval) {
-        // Called before each frame is rendered
+    func win() {
+        playable = false
+        SKTAudio.sharedInstance().pauseBackgroundMusic()
+        SKTAudio.sharedInstance().playSoundEffect("win.mp3")
+        
+        inGameMessage(text: "Nice job!")
+        
+        run(SKAction.afterDelay(3, runBlock: newGame))
+        catNode.curlAt(scenePoint: bedNode.position)
     }
 }
+
