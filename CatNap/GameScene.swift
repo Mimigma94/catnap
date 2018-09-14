@@ -10,12 +10,13 @@ import SpriteKit
 import GameplayKit
 
 struct PhysicsCategory {
-    static let None: UInt32 = 0
-    static let cat: UInt32 = 0b1
-    static let Block: UInt32 = 0b10
-    static let Bed: UInt32 = 0b100
-    static let Edge: UInt32 = 0b1000
-    static let Label: UInt32 = 0b10000
+    static let None: UInt32 = 0         // 00 0000
+    static let cat: UInt32 = 0b1        // 00 0001 
+    static let Block: UInt32 = 0b10     // 00 0010
+    static let Bed: UInt32 = 0b100      // 00 0100
+    static let Edge: UInt32 = 0b1000    // 00 1000
+    static let Label: UInt32 = 0b10000  // 01 0000
+    static let Spring: UInt32 = 0b100000// 10 0000
 }
 
 protocol EventListenerNode {
@@ -35,6 +36,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var bedNode: BedNode!
     var catNode: CatNode!
     var playable = true
+    var currentLevel: Int = 0
     
     //--------------------------------------------------
     // MARK: - Lifecycle
@@ -118,9 +120,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func newGame() {
-        let scene = GameScene(fileNamed: "GameScene")
-        scene!.scaleMode = scaleMode
-        view!.presentScene(scene)
+        view!.presentScene(GameScene.level(levelNum: currentLevel))
     }
     
     func lose() {
@@ -143,6 +143,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         run(SKAction.afterDelay(3, runBlock: newGame))
         catNode.curlAt(scenePoint: bedNode.position)
+    }
+    
+    class func level(levelNum: Int) -> GameScene? {
+        let scene = GameScene(fileNamed: "Level\(levelNum)")!
+        scene.currentLevel = levelNum
+        scene.scaleMode = .aspectFill
+        return scene
     }
 }
 
