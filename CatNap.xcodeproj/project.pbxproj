@@ -25,6 +25,7 @@
 		1524BC852140383A0089AB18 /* CatWakeUp.sks in Resources */ = {isa = PBXBuildFile; fileRef = 1524BC842140383A0089AB18 /* CatWakeUp.sks */; };
 		152DC87A214BB25C0019E878 /* Level2.sks in Resources */ = {isa = PBXBuildFile; fileRef = 152DC879214BB25C0019E878 /* Level2.sks */; };
 		152DC87C214BB4ED0019E878 /* SpringNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 152DC87B214BB4ED0019E878 /* SpringNode.swift */; };
+		152DC88221529B2B0019E878 /* HookBaseNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 152DC88121529B2B0019E878 /* HookBaseNode.swift */; };
 		156F7470213DA43300C94A21 /* BedNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 156F746F213DA43300C94A21 /* BedNode.swift */; };
 		156F7472213DA69100C94A21 /* CatNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 156F7471213DA69100C94A21 /* CatNode.swift */; };
 		15F1FCD121393253007BC33C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15F1FCD021393253007BC33C /* AppDelegate.swift */; };
@@ -62,6 +63,7 @@
 		1524BC842140383A0089AB18 /* CatWakeUp.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = CatWakeUp.sks; sourceTree = "<group>"; };
 		152DC879214BB25C0019E878 /* Level2.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Level2.sks; sourceTree = "<group>"; };
 		152DC87B214BB4ED0019E878 /* SpringNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpringNode.swift; sourceTree = "<group>"; };
+		152DC88121529B2B0019E878 /* HookBaseNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HookBaseNode.swift; sourceTree = "<group>"; };
 		156F746F213DA43300C94A21 /* BedNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BedNode.swift; sourceTree = "<group>"; };
 		156F7471213DA69100C94A21 /* CatNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatNode.swift; sourceTree = "<group>"; };
 		15F1FCCD21393253007BC33C /* CatNap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CatNap.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -115,6 +117,7 @@
 		1524BC7F213FE9090089AB18 /* Custom classes */ = {
 			isa = PBXGroup;
 			children = (
+				152DC88121529B2B0019E878 /* HookBaseNode.swift */,
 				1524BC80214029010089AB18 /* MessageNode.swift */,
 				152DC87B214BB4ED0019E878 /* SpringNode.swift */,
 				1524BC7D213FE7590089AB18 /* BlockNode.swift */,
@@ -281,6 +284,7 @@
 				156F7470213DA43300C94A21 /* BedNode.swift in Sources */,
 				1524BC73213FE2BA0089AB18 /* Int+Extensions.swift in Sources */,
 				15F1FCD921393253007BC33C /* GameViewController.swift in Sources */,
+				152DC88221529B2B0019E878 /* HookBaseNode.swift in Sources */,
 				152DC87C214BB4ED0019E878 /* SpringNode.swift in Sources */,
 				1524BC7C213FE2BA0089AB18 /* CGFloat+Extensions.swift in Sources */,
 				1524BC7B213FE2BA0089AB18 /* Vector3.swift in Sources */,
