@@ -10,14 +10,14 @@ import SpriteKit
 import GameplayKit
 
 struct PhysicsCategory {
-    static let None: UInt32 = 0         // 00 0000
-    static let cat: UInt32 = 0b1        // 00 0001 
-    static let Block: UInt32 = 0b10     // 00 0010
-    static let Bed: UInt32 = 0b100      // 00 0100
-    static let Edge: UInt32 = 0b1000    // 00 1000
-    static let Label: UInt32 = 0b10000  // 01 0000
-    static let Spring: UInt32 = 0b100000// 10 0000
-    static let Hook: UInt32 = 0b1000000
+    static let None: UInt32 = 0         // 000 0000
+    static let cat: UInt32 = 0b1        // 000 0001
+    static let Block: UInt32 = 0b10     // 000 0010
+    static let Bed: UInt32 = 0b100      // 000 0100
+    static let Edge: UInt32 = 0b1000    // 000 1000
+    static let Label: UInt32 = 0b10000  // 001 0000
+    static let Spring: UInt32 = 0b100000// 010 0000
+    static let Hook: UInt32 = 0b1000000 // 100 0000
 }
 
 protocol EventListenerNode {
@@ -38,6 +38,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var catNode: CatNode!
     var playable = true
     var currentLevel: Int = 0
+    var hookBaseNode: HookBaseNode?
     
     //--------------------------------------------------
     // MARK: - Lifecycle
@@ -72,14 +73,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         catNode = childNode(withName: "//cat_body") as! CatNode
         
         SKTAudio.sharedInstance().playBackgroundMusic("backgroundMusic.mp3")
+        
+        // -π/4 sind -45Grad π ist in den SKUtils definiert
+        //let rotationConstrain = SKConstraint.zRotation(SKRange(lowerLimit: -π/4, upperLimit: π/4))
+        // catNode.parent!.constraints = [rotationConstrain]
+        
+        hookBaseNode = childNode(withName: "hookBase") as? HookBaseNode
     }
     
     override func didSimulatePhysics() {
-        if playable {
+        if playable && hookBaseNode?.isHooked != true {
             if abs(catNode.parent!.zRotation) > CGFloat(25).degreesToRadians() {
                 lose()
             }
         }
+    
     }
     
     //--------------------------------------------------
@@ -111,6 +119,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else if collision == PhysicsCategory.cat | PhysicsCategory.Edge {
             print("FAIL")
             lose()
+        }
+        
+        if collision == PhysicsCategory.cat | PhysicsCategory.Hook && hookBaseNode?.isHooked == false {
+            hookBaseNode!.hookCat(catPhysicsBody: catNode.parent!.physicsBody!)
+            
+            
         }
     }
     
